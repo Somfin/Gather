@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 1c05b65f4b518e34f8dd2c394b1d8dd1
+timeCreated: 1493380213
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Queen & Country Bold Italic
+  fontNames:
+  - Queen & Country Bold Italic
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

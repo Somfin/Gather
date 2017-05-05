@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 9a5afe64a83b9e74eb6c2ee40b589a06
+timeCreated: 1493380213
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Queen & Country 3D Italic
+  fontNames:
+  - Queen & Country 3D Italic
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
