@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ButtonUtilities : MonoBehaviour {
 
@@ -27,7 +26,7 @@ public class ButtonUtilities : MonoBehaviour {
 
     public void LoadScene(string targetScene)
     {
-        SceneManager.LoadScene(targetScene);
+        SceneHandler.Instance.LoadScene(targetScene);
     }
 
     public void ExitGame()

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CassidyMenuSystem : MonoBehaviour {
     public GameObject pauseMenu;
-    public GameObject inventoryMenu;
 
     private void Start()
     {

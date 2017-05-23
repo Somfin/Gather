@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Cassidy\CassidyMenuSystem.cs" />
     <Compile Include="Assets\Scripts\Cassidy\CassidyMovement.cs" />
     <Compile Include="Assets\Scripts\Menu\ButtonUtilities.cs" />
+    <Compile Include="Assets\Scripts\Menu\InventoryUIControl.cs" />
     <Compile Include="Assets\Scripts\Menu\Item.cs" />
     <Compile Include="Assets\Scripts\Monster\MonsterHealth.cs" />
     <Compile Include="Assets\Scripts\Projectiles\DealDamageOnCollide.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Assets\Scripts\Projectiles\DropTrailOnDestroy.cs" />
     <Compile Include="Assets\Scripts\Projectiles\LoseDamageOnCollide.cs" />
     <Compile Include="Assets\Scripts\Utility\CreateObjectOnDestroy.cs" />
-    <Compile Include="Assets\Scripts\Utility\GameState.cs" />
     <Compile Include="Assets\Scripts\Utility\Interact\ChangeStateOnInteract.cs" />
     <Compile Include="Assets\Scripts\Utility\Interact\DestroyOnInteract.cs" />
     <Compile Include="Assets\Scripts\Utility\Interact\GiveItemOnInteract.cs" />
@@ -98,7 +98,10 @@
     <Compile Include="Assets\Scripts\Utility\LerpTwoTransforms.cs" />
     <Compile Include="Assets\Scripts\Utility\Lifespan.cs" />
     <Compile Include="Assets\Scripts\Utility\MatchMouseMovement.cs" />
-    <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
+    <Compile Include="Assets\Scripts\Utility\Singletons\GameState.cs" />
+    <Compile Include="Assets\Scripts\Utility\Singletons\SceneHandler.cs" />
+    <Compile Include="Assets\Scripts\Utility\Singletons\Singleton.cs" />
+    <Compile Include="Assets\Scripts\Utility\StartPersistentScene.cs" />
     <Compile Include="Assets\Scripts\Weapons\AbstractWeapon.cs" />
     <Compile Include="Assets\Scripts\Weapons\HoldToShoot.cs" />
     <Compile Include="Assets\Scripts\Weapons\IWeapon.cs" />

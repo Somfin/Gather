@@ -1,13 +1,13 @@
 sceneSetups:
 - path: Assets/Scenes/Persistent Scene.unity
   isLoaded: 1
-  isActive: 0
+  isActive: 1
 - path: Assets/Scenes/Start Scene.unity
   isLoaded: 0
   isActive: 0
 - path: Assets/Scenes/Test Scene.unity
   isLoaded: 1
-  isActive: 1
+  isActive: 0
 - path: Assets/Scenes/Win Scene.unity
   isLoaded: 0
   isActive: 0

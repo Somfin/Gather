@@ -32,9 +32,4 @@ public class GameState : Singleton<GameState> {
                 break;
         }
     }
-
-    public void OnGUI()
-    {
-        GUI.TextArea(new Rect(0, 0, 200, 20), "Current state: " + currentState.ToString());
-    }
 }
