@@ -6,14 +6,18 @@ using UnityEngine;
 
 public class CassidyInventorySystem : MonoBehaviour {
     public GameObject inventoryMenu;
-    public Scrollbar inventoryScrollbar;
     public CassidyCombat combat;
     public List<GameObject> items;
     public List<GameObject> craftables;
     private bool isDirty;
+    private bool beenRead;
 
     // Update is called once per frame
     void Update () {
+        if (beenRead)
+        {
+            isDirty = false;
+        }
         if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleMenu();
@@ -31,7 +35,10 @@ public class CassidyInventorySystem : MonoBehaviour {
             case GameState.State.PLAY:
                 GameState.Instance.SetState(GameState.State.PAUSE);
                 inventoryMenu.SetActive(true);
-                inventoryScrollbar.onValueChanged.Invoke(1);
+                foreach (Scrollbar sb in inventoryMenu.GetComponentsInChildren<Scrollbar>())
+                {
+                    sb.onValueChanged.Invoke(1);
+                }
                 break;
             case GameState.State.PAUSE:
                 GameState.Instance.SetState(GameState.State.PLAY);
@@ -42,22 +49,26 @@ public class CassidyInventorySystem : MonoBehaviour {
 
     private void Craft()
     {
-        var resources = items.Select(i => i.GetComponent<Item>().part).ToList();
-        var working = craftables.Where(c => c.GetComponent<Item>().recipe.All(r => resources.Contains(r))).ToList();
-        foreach (GameObject o in working)
+        foreach (GameObject item in GetCurrentCraftables())
         {
-            var itemsToRemove = items.Where(i => o.GetComponent<Item>().recipe.Contains(i.GetComponent<Item>().part)).ToList();
-            foreach (GameObject i in itemsToRemove)
-            {
-                if (i.GetComponent<Item>().itemType == Item.Type.WEAPON)
-                {
-                    combat.loadout.Remove(i);
-                }
-                items.Remove(i);
-            }
-            AddItem(o);
-            isDirty = true;
+            CraftItem(item);
         }
+    }
+
+    public void CraftItem(GameObject item)
+    {
+        var itemsToRemove = items.Where(i => item.GetComponent<Item>().recipe.Contains(i.GetComponent<Item>().part)).ToList();
+        foreach (GameObject i in itemsToRemove)
+        {
+            if (i.GetComponent<Item>().itemType == Item.Type.WEAPON)
+            {
+                combat.loadout.Remove(i);
+            }
+            items.Remove(i);
+        }
+        AddItem(item);
+        isDirty = true;
+        beenRead = false;
     }
 
     public void AddItem (GameObject itemComp)
@@ -71,14 +82,20 @@ public class CassidyInventorySystem : MonoBehaviour {
             }
             items.Add(itemComp);
             isDirty = true;
+            beenRead = false;
         }
+    }
+
+    public List<GameObject> GetCurrentCraftables()
+    {
+        var resources = items.Select(i => i.GetComponent<Item>().part).ToList();
+        var working = craftables.Where(c => c.GetComponent<Item>().recipe.All(r => resources.Contains(r))).ToList();
+        return working;
     }
 
     public void OnGUI()
     {
-        var resources = items.Select(i => i.GetComponent<Item>().part).ToList();
-        var working = craftables.Where(c => c.GetComponent<Item>().recipe.All(r => resources.Contains(r))).ToList();
-        var names = string.Join(",", working.Select(i => i.name).ToArray());
+        var names = string.Join(",", GetCurrentCraftables().Select(i => i.name).ToArray());
         GUI.TextField(new Rect(0, 0, 200, 20), "Can craft: " + names);
     }
 
@@ -86,7 +103,7 @@ public class CassidyInventorySystem : MonoBehaviour {
     {
         if (isDirty)
         {
-            isDirty = false;
+            beenRead = true;
             return true;
         }
         return false;

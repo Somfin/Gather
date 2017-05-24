@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine;
 
-public class InventoryUIControl : MonoBehaviour {
+public abstract class AbstractItemListControl : MonoBehaviour {
     public float itemHeight;
     public CassidyInventorySystem inventory;
     public GameObject buttonPrototype;
@@ -24,15 +25,17 @@ public class InventoryUIControl : MonoBehaviour {
             {
                 Destroy(child.gameObject);
             }
-            var items = inventory.items.Select(i => i.GetComponent<Item>());
+            var items = GetContent();
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, items.Count() * itemHeight);
-            foreach (Item i in items)
+            foreach (GameObject i in items)
             {
                 var button = Instantiate(buttonPrototype);
-                var text = button.GetComponentInChildren<Text>();
-                text.text = i.name;
+                SetupButton(i, button);
                 button.transform.SetParent(transform, false);
             }
         }
-    }
+    }   
+
+    public abstract List<GameObject> GetContent();
+    public abstract void SetupButton(GameObject item, GameObject button);
 }

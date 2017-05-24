@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ public class Item : MonoBehaviour {
         QUEST,
         PART
     }
-
+    
     public enum RecipePart
     {
         KNIFE_PART_1,
@@ -22,4 +23,6 @@ public class Item : MonoBehaviour {
         KNIFE_WEAPON,
         KNIFE_UPGRADE
     }
+
+    public class SRecipePart : SerializableEnum<RecipePart>{}
 }

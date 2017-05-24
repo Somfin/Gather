@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -80,8 +82,11 @@
     <Compile Include="Assets\Scripts\Cassidy\CassidyInventorySystem.cs" />
     <Compile Include="Assets\Scripts\Cassidy\CassidyMenuSystem.cs" />
     <Compile Include="Assets\Scripts\Cassidy\CassidyMovement.cs" />
+    <Compile Include="Assets\Scripts\Menu\CraftableListControl.cs" />
+    <Compile Include="Assets\Scripts\Menu\FilteredItemListControl.cs" />
     <Compile Include="Assets\Scripts\Menu\ButtonUtilities.cs" />
-    <Compile Include="Assets\Scripts\Menu\InventoryUIControl.cs" />
+    <Compile Include="Assets\Scripts\Menu\CraftCraftable.cs" />
+    <Compile Include="Assets\Scripts\Menu\AbstractItemListControl.cs" />
     <Compile Include="Assets\Scripts\Menu\Item.cs" />
     <Compile Include="Assets\Scripts\Monster\MonsterHealth.cs" />
     <Compile Include="Assets\Scripts\Projectiles\DealDamageOnCollide.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="Assets\Scripts\Utility\LerpTwoTransforms.cs" />
     <Compile Include="Assets\Scripts\Utility\Lifespan.cs" />
     <Compile Include="Assets\Scripts\Utility\MatchMouseMovement.cs" />
+    <Compile Include="Assets\Scripts\Utility\SerializableEnum.cs" />
     <Compile Include="Assets\Scripts\Utility\Singletons\GameState.cs" />
     <Compile Include="Assets\Scripts\Utility\Singletons\SceneHandler.cs" />
     <Compile Include="Assets\Scripts\Utility\Singletons\Singleton.cs" />
