@@ -23,6 +23,4 @@ public class Item : MonoBehaviour {
         KNIFE_WEAPON,
         KNIFE_UPGRADE
     }
-
-    public class SRecipePart : SerializableEnum<RecipePart>{}
 }

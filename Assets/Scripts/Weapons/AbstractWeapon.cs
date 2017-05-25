@@ -17,6 +17,7 @@ public abstract class AbstractProjectileWeapon : MonoBehaviour, IWeapon
     protected float cooldown;
     protected Vector2 direction;
     protected Vector2 source;
+
     public void Equip(GameObject owner) {
         OnEquip(owner);
     }
@@ -30,6 +31,7 @@ public abstract class AbstractProjectileWeapon : MonoBehaviour, IWeapon
     {
         OnReady(target, source, owner);
     }
+
     public void Pull(GameObject owner)
     {
         if (holdTime == 0)

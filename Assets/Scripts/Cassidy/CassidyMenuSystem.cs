@@ -7,7 +7,7 @@ public class CassidyMenuSystem : MonoBehaviour {
 
     private void Start()
     {
-        GameState.Instance.SetState(GameState.State.PLAY);
+        GameState.Instance.SetState(GameState.State.MENU);
     }
 
     // Update is called once per frame

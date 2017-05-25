@@ -13,7 +13,7 @@ public class FilteredItemListControl : AbstractItemListControl
 
     public override List<GameObject> GetContent()
     {
-        return inventory.items.Where(i => i.GetComponent<Item>().itemType == typeFilter.Value).ToList();
+        return inventory.GetInventoryState().Where(i => i.GetComponent<Item>().itemType == typeFilter.Value).ToList();
     }
 
     public override void SetupButton(GameObject item, GameObject button)

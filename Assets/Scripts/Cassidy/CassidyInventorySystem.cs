@@ -3,28 +3,26 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class CassidyInventorySystem : MonoBehaviour {
     public GameObject inventoryMenu;
     public CassidyCombat combat;
-    public List<GameObject> items;
     public List<GameObject> craftables;
-    private bool isDirty;
-    private bool beenRead;
 
-    // Update is called once per frame
+    private List<GameObject> items;
+    private bool isDirty;
+
+    private void Start()
+    {
+        GameState.Instance.SetState(GameState.State.PLAY);
+        this.items = new List<GameObject>();
+    }
+
     void Update () {
-        if (beenRead)
-        {
-            isDirty = false;
-        }
         if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleMenu();
-        }
-		if (Input.GetKeyDown(KeyCode.C))
-        {
-            Craft();
         }
 	}
 
@@ -47,16 +45,22 @@ public class CassidyInventorySystem : MonoBehaviour {
         }
     }
 
-    private void Craft()
+    public List<GameObject> GetCurrentItems()
     {
-        foreach (GameObject item in GetCurrentCraftables())
-        {
-            CraftItem(item);
-        }
+        return items;
+    }
+
+    public List<GameObject> GetCurrentCraftables()
+    {
+        var resources = items.Select(i => i.GetComponent<Item>().part).ToList();
+        var working = craftables.Where(c => c.GetComponent<Item>().recipe.All(r => resources.Contains(r))).ToList();
+        return working;
     }
 
     public void CraftItem(GameObject item)
     {
+        Assert.IsTrue(GetCurrentCraftables().Contains(item));
+
         var itemsToRemove = items.Where(i => item.GetComponent<Item>().recipe.Contains(i.GetComponent<Item>().part)).ToList();
         foreach (GameObject i in itemsToRemove)
         {
@@ -67,43 +71,27 @@ public class CassidyInventorySystem : MonoBehaviour {
             items.Remove(i);
         }
         AddItem(item);
-        isDirty = true;
-        beenRead = false;
     }
 
-    public void AddItem (GameObject itemComp)
+    public void AddItem (GameObject item)
     {
-        var item = itemComp.GetComponent<Item>();
-        if (item != null)
+        var itemComponent = item.GetComponent<Item>();
+        if (itemComponent != null)
         {
-            if (item.itemType == Item.Type.WEAPON)
+            if (itemComponent.itemType == Item.Type.WEAPON)
             {
-                combat.loadout.Add(itemComp);
+                combat.loadout.Add(item);
             }
-            items.Add(itemComp);
+            items.Add(item);
             isDirty = true;
-            beenRead = false;
         }
-    }
-
-    public List<GameObject> GetCurrentCraftables()
-    {
-        var resources = items.Select(i => i.GetComponent<Item>().part).ToList();
-        var working = craftables.Where(c => c.GetComponent<Item>().recipe.All(r => resources.Contains(r))).ToList();
-        return working;
-    }
-
-    public void OnGUI()
-    {
-        var names = string.Join(",", GetCurrentCraftables().Select(i => i.name).ToArray());
-        GUI.TextField(new Rect(0, 0, 200, 20), "Can craft: " + names);
     }
 
     public bool CheckIfDirtyOnlyOnce()
     {
         if (isDirty)
         {
-            beenRead = true;
+            isDirty = false;
             return true;
         }
         return false;

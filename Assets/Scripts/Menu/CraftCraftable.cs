@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CraftCraftable : MonoBehaviour {
     public GameObject craftable;
-    public CassidyInventorySystem inventory;
+    public InventoryAdapter inventory;
 
     public void Craft()
     {
-        inventory.CraftItem(craftable);
+        inventory.RequestCraftItem(craftable);
     }
 }

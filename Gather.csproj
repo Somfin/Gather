@@ -82,11 +82,12 @@
     <Compile Include="Assets\Scripts\Cassidy\CassidyInventorySystem.cs" />
     <Compile Include="Assets\Scripts\Cassidy\CassidyMenuSystem.cs" />
     <Compile Include="Assets\Scripts\Cassidy\CassidyMovement.cs" />
-    <Compile Include="Assets\Scripts\Menu\CraftableListControl.cs" />
-    <Compile Include="Assets\Scripts\Menu\FilteredItemListControl.cs" />
+    <Compile Include="Assets\Scripts\Menu\AbstractItemListControl.cs" />
     <Compile Include="Assets\Scripts\Menu\ButtonUtilities.cs" />
     <Compile Include="Assets\Scripts\Menu\CraftCraftable.cs" />
-    <Compile Include="Assets\Scripts\Menu\AbstractItemListControl.cs" />
+    <Compile Include="Assets\Scripts\Menu\CraftableListControl.cs" />
+    <Compile Include="Assets\Scripts\Menu\InventoryAdapter.cs" />
+    <Compile Include="Assets\Scripts\Menu\FilteredItemListControl.cs" />
     <Compile Include="Assets\Scripts\Menu\Item.cs" />
     <Compile Include="Assets\Scripts\Monster\MonsterHealth.cs" />
     <Compile Include="Assets\Scripts\Projectiles\DealDamageOnCollide.cs" />
