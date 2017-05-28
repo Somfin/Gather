@@ -18,9 +18,15 @@ public class Item : MonoBehaviour {
     
     public enum RecipePart
     {
-        KNIFE_PART_1,
-        KNIFE_PART_2,
-        KNIFE_WEAPON,
-        KNIFE_UPGRADE
+        NULL = 0,
+
+        SPIKE_PART_1 = 101,
+        SPIKE_WEAPON = 102,
+        SPIKE_UPGRADE = 103,
+
+        KNIFE_PART_1 = 201,
+        KNIFE_PART_2 = 202,
+        KNIFE_WEAPON = 203,
+        KNIFE_UPGRADE = 204
     }
 }

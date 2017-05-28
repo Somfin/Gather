@@ -25,5 +25,9 @@ public class CassidyCombat : MonoBehaviour {
         {
             currentWeapon.Release(gameObject);
         }
+        if (Input.GetAxisRaw("Mouse Wheel") != 0)
+        {
+            equippedIndex = (equippedIndex + 1) % loadout.Count();
+        }
 	}
 }
