@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ButtonUtilities : MonoBehaviour {
+    [SerializeField]
+    private GameObject cassidy;
 
     public void SetPause()
     {
@@ -27,6 +30,28 @@ public class ButtonUtilities : MonoBehaviour {
     public void LoadScene(string targetScene)
     {
         SceneHandler.Instance.LoadScene(targetScene);
+    }
+
+    public void DespawnCassidy()
+    {
+        Destroy(GameState.Instance.cassidy);
+    }
+
+    public void StartFile(int file)
+    {
+        GameState.Instance.SetFile(file);
+        var save = new GameSave("Test Scene", 0, 1, new List<string>(), new List<string>());
+    }
+
+    public bool HasFileToLoad(int i)
+    {
+        return GameSave.HasFile((GameState.File)i);
+    }
+
+    public void LoadFile(int file)
+    {
+        GameState.Instance.SetFile(file);
+        GameSave.LoadFromFile(cassidy, GameSave.CurrentFilePath());
     }
 
     public void ExitGame()

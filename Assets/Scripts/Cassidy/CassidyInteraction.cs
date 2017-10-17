@@ -8,16 +8,19 @@ public class CassidyInteraction : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (GameState.Instance.currentState == GameState.State.PLAY)
         {
-            var target = targets.FirstOrDefault();
-            if (target != null)
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                foreach(var interact in target.GetComponents<Interaction>())
+                var target = targets.FirstOrDefault();
+                if (target != null)
                 {
-                    interact.Interact(gameObject);
+                    foreach(var interact in target.GetComponents<Interaction>())
+                    {
+                        interact.Interact(gameObject);
+                    }
+                    RemoveTarget(target);
                 }
-                RemoveTarget(target);
             }
         }
     }

@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CassidyMovement : MonoBehaviour {
-    public float horizSpeed;
-    public float vertSpeed;
-    public float firstJumpTime;
-    public float secondJumpTime;
-    public bool secondJumpAvailable;
-
-    public Transform groundCheck;
-    public float groundCheckRadius;
-    public LayerMask isGround;
-
-    public float isFallingSpeed;
+    [SerializeField] private float baseHorizSpeed;
+    [SerializeField] private float duckingHorizSpeed;
+    [Space(10)]
+    [SerializeField] private float baseJumpSpeed;
+    [SerializeField] private float bodyBaseGravity;
+    [SerializeField] private float baseHoverSpeed;
+    [SerializeField] private float bodyHoverGravity;
+    [Space(10)]
+    [SerializeField] private float firstJumpTime;
+    [SerializeField] private float secondJumpTime;
+    [SerializeField] private bool secondJumpAvailable;
+    [Space(10)]
+    [SerializeField] public Transform groundCheck;
+    [SerializeField] private float groundCheckRadius;
+    [SerializeField] private LayerMask isGround;
+    [Space(10)]
+    [SerializeField] private float isFallingSpeed;
+    [SerializeField] private float forceMultiplier;
 
     private bool left;
     private bool right;
@@ -21,16 +28,20 @@ public class CassidyMovement : MonoBehaviour {
     private bool down;
     private bool hover;
 
+    private bool started = false;
+    
     private bool isJumping;
     private bool secondJumpReady;
-    private float jumpTimeUsed;
+    public float jumpTimeUsed;
+    public float jumpLimit;
     private State state;
 
     private enum State
     {
         GROUNDED,
         RISING,
-        FALLING
+        FALLING,
+        UNCONTROLLED
     }
 
     // Use this for initialization
@@ -39,7 +50,19 @@ public class CassidyMovement : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        if (!started)
+        {
+            var body = gameObject.GetComponent<Rigidbody2D>();
+            started = true;
+            body.gravityScale = 7;
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            ApplyKnockback(new Vector2(10, 10));
+        }
         left = Input.GetKey(KeyCode.A);
         right = Input.GetKey(KeyCode.D);
         up = Input.GetKey(KeyCode.W);
@@ -50,11 +73,41 @@ public class CassidyMovement : MonoBehaviour {
     private void FixedUpdate()
     {
         var body = gameObject.GetComponent<Rigidbody2D>();
-        var moveDir = (left ? -1 : 0) +  (right ? 1 : 0);
-        body.velocity = new Vector2(moveDir * horizSpeed, body.velocity.y);
+        body.gravityScale = bodyBaseGravity;
 
-        GroundingCheck();
-        
+        StateCheck();
+        if (state == State.UNCONTROLLED)
+        {
+        }
+        else if (hover)
+        {
+            body.gravityScale = bodyHoverGravity;
+            HandleHover(body);
+            secondJumpReady = false;
+            state = State.RISING;
+        }
+        else
+        {
+            HandleMovement(body);
+            HandleJumping(body);
+        }
+    }
+
+    private void HandleMovement(Rigidbody2D body)
+    {
+        var effectiveHorizSpeed = baseHorizSpeed;
+        if (down && state == State.GROUNDED)
+        {
+            effectiveHorizSpeed = duckingHorizSpeed;
+        }
+        Vector2 inputForce = GetInputForce(body, effectiveHorizSpeed);
+
+        body.AddForce(inputForce);
+    }
+
+    private void HandleJumping(Rigidbody2D body)
+    {
+        var effectiveJumpSeed = baseJumpSpeed;
         if (up)
         {
             switch (state)
@@ -62,34 +115,32 @@ public class CassidyMovement : MonoBehaviour {
                 case State.GROUNDED:
                     if (!isJumping)
                     {
-                        state = State.RISING;
-                        body.velocity = new Vector2(body.velocity.x, vertSpeed);
-                        jumpTimeUsed = firstJumpTime;
+                        SetupJump(firstJumpTime);
                     }
                     break;
                 case State.RISING:
-                    jumpTimeUsed -= Time.deltaTime;
-                    if (jumpTimeUsed < 0)
+                    jumpTimeUsed += Time.deltaTime;
+                    if (jumpTimeUsed > jumpLimit)
                     {
                         state = State.FALLING;
-                    } else
+                    }
+                    else
                     {
-                        body.velocity = new Vector2(body.velocity.x, vertSpeed);
+                        body.velocity = new Vector2(body.velocity.x, effectiveJumpSeed);
                     }
                     break;
                 case State.FALLING:
                     if (secondJumpReady && !isJumping)
                     {
-                        state = State.RISING;
-                        body.velocity = new Vector2(body.velocity.x, vertSpeed);
-                        jumpTimeUsed = secondJumpTime;
+                        SetupJump(secondJumpTime);
                         secondJumpReady = false;
                     }
                     break;
 
             }
             isJumping = true;
-        } else
+        }
+        else
         {
             switch (state)
             {
@@ -101,11 +152,53 @@ public class CassidyMovement : MonoBehaviour {
         }
     }
 
-    private void GroundingCheck()
+    private void HandleHover(Rigidbody2D body)
+    {
+        var effectiveHoverSpeed = baseHoverSpeed;
+        Vector2 inputForce = GetHoverForce(body, effectiveHoverSpeed);
+        body.AddForce(inputForce);
+    }
+
+    private Vector2 GetHoverForce(Rigidbody2D body, float effectiveHoverSpeed)
+    {
+        var vert = (up ? 1 : 0) - (down ? 1 : 0);
+        var horiz = (right ? 1 : 0) - (left ? 1 : 0);
+        var move = new Vector2(horiz, vert).normalized;
+        var travelDir = body.velocity.normalized;
+        var speed = Vector2.Dot(body.velocity, travelDir);
+        var brakes = -travelDir * (speed / effectiveHoverSpeed);
+
+        var inputForce = (move + brakes) * effectiveHoverSpeed * forceMultiplier;
+        return inputForce;
+    }
+
+    private Vector2 GetInputForce(Rigidbody2D body, float effectiveHorizSpeed)
+    {
+        var horiz = (right ? 1 : 0) - (left ? 1 : 0);
+        var move = new Vector2(horiz, 0);
+
+        var travelDir = new Vector2(body.velocity.x, 0).normalized;
+        var speed = Vector2.Dot(body.velocity, travelDir);
+        var brakes = -travelDir * (speed / effectiveHorizSpeed);
+
+        var inputForce = (move + brakes) * effectiveHorizSpeed * forceMultiplier;
+        Debug.DrawRay(gameObject.transform.position + gameObject.transform.up, move, Color.cyan);
+        Debug.DrawRay(gameObject.transform.position + gameObject.transform.up, brakes, Color.red);
+        Debug.DrawRay(gameObject.transform.position + gameObject.transform.up / 2, body.velocity, Color.green);
+        return inputForce;
+    }
+
+    private void StateCheck()
     {
         var body = gameObject.GetComponent<Rigidbody2D>();
         switch (state)
         {
+            case State.UNCONTROLLED:
+                if (IsGrounded() && body.velocity.y <= 0)
+                {
+                    state = State.FALLING;
+                }
+                break;
             case State.GROUNDED:
                 if (!IsGrounded())
                 {
@@ -118,15 +211,36 @@ public class CassidyMovement : MonoBehaviour {
             case State.FALLING:
                 if (IsGrounded())
                 {
-                    state = State.GROUNDED;
-                    secondJumpReady = secondJumpAvailable;
+                    ResetJump();
                 }
                 break;
         }
     }
 
+    private void ResetJump()
+    {
+        jumpLimit = 0;
+        jumpTimeUsed = 0;
+        secondJumpReady = secondJumpAvailable;
+        state = State.GROUNDED;
+    }
+
+    private void SetupJump(float incomingJumpLimit)
+    {
+        jumpTimeUsed = 0;
+        jumpLimit = incomingJumpLimit;
+        state = State.RISING;
+    }
+
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, isGround);
+    }
+
+    public void ApplyKnockback(Vector2 force)
+    {
+        var body = gameObject.GetComponent<Rigidbody2D>();
+        body.AddForce(force, ForceMode2D.Impulse);
+        state = State.UNCONTROLLED;
     }
 }

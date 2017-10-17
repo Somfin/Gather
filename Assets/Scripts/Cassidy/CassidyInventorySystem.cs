@@ -10,14 +10,8 @@ public class CassidyInventorySystem : MonoBehaviour {
     public CassidyCombat combat;
     public List<GameObject> craftables;
 
-    private List<GameObject> items;
-    private bool isDirty;
-
-    private void Start()
-    {
-        GameState.Instance.SetState(GameState.State.PLAY);
-        this.items = new List<GameObject>();
-    }
+    private List<GameObject> items = new List<GameObject>();
+    private bool isDirty = true;
 
     void Update () {
         if (Input.GetKeyDown(KeyCode.I))
@@ -28,20 +22,17 @@ public class CassidyInventorySystem : MonoBehaviour {
 
     private void ToggleMenu()
     {
-        switch (GameState.Instance.currentState)
+        if (GameState.Instance.CanToggleSingletonMenu(inventoryMenu))
         {
-            case GameState.State.PLAY:
-                GameState.Instance.SetState(GameState.State.PAUSE);
-                inventoryMenu.SetActive(true);
-                foreach (Scrollbar sb in inventoryMenu.GetComponentsInChildren<Scrollbar>())
-                {
-                    sb.onValueChanged.Invoke(1);
-                }
-                break;
-            case GameState.State.PAUSE:
-                GameState.Instance.SetState(GameState.State.PLAY);
-                inventoryMenu.SetActive(false);
-                break; 
+            inventoryMenu.SetActive(!inventoryMenu.activeSelf);
+            if (inventoryMenu.activeSelf)
+            {
+                GameState.Instance.RegisterMenuOpen(inventoryMenu);
+            }
+            else
+            {
+                GameState.Instance.RegisterMenuClose(inventoryMenu);
+            }
         }
     }
 
@@ -66,7 +57,7 @@ public class CassidyInventorySystem : MonoBehaviour {
         {
             if (i.GetComponent<Item>().itemType == Item.Type.WEAPON)
             {
-                combat.loadout.Remove(i);
+                combat.RemoveFromLoadout(i);
             }
             items.Remove(i);
         }
@@ -80,7 +71,7 @@ public class CassidyInventorySystem : MonoBehaviour {
         {
             if (itemComponent.itemType == Item.Type.WEAPON)
             {
-                combat.loadout.Add(item);
+                combat.AddToLoadout(item);
             }
             items.Add(item);
             isDirty = true;

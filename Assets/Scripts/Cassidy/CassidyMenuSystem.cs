@@ -5,11 +5,6 @@ using UnityEngine;
 public class CassidyMenuSystem : MonoBehaviour {
     public GameObject pauseMenu;
 
-    private void Start()
-    {
-        GameState.Instance.SetState(GameState.State.MENU);
-    }
-
     // Update is called once per frame
     void Update () {
 		if (Input.GetKeyDown(KeyCode.Escape))
@@ -20,16 +15,17 @@ public class CassidyMenuSystem : MonoBehaviour {
 
     private void ToggleMenu()
     {
-        switch (GameState.Instance.currentState)
+        if (GameState.Instance.currentState != GameState.State.MENU)
         {
-            case GameState.State.PLAY:
-                GameState.Instance.SetState(GameState.State.PAUSE);
-                pauseMenu.SetActive(true);
-                break;
-            case GameState.State.PAUSE:
-                GameState.Instance.SetState(GameState.State.PLAY);
-                pauseMenu.SetActive(false);
-                break;
+            pauseMenu.SetActive(!pauseMenu.activeSelf);
+            if (pauseMenu.activeSelf)
+            {
+                GameState.Instance.RegisterMenuOpen(pauseMenu);
+            }
+            else
+            {
+                GameState.Instance.RegisterMenuClose(pauseMenu);
+            }
         }
     }
 }
